@@ -1,0 +1,41 @@
+name: Build Linux Executable
+
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-linux:
+    name: Build Linux executable
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install pyinstaller
+          pip install -r requirements.txt || true
+
+
+      - name: Build executable
+        run: |
+          pyinstaller --onefile HardScope.py
+
+
+      - name: Upload Linux executable
+        uses: actions/upload-artifact@v3
+        with:
+          name: HardScope-linux
+          path: dist/HardScope
